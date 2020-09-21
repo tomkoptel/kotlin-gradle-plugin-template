@@ -43,3 +43,17 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:1.3.0")
     androidTestImplementation("androidx.test:runner:1.3.0")
 }
+
+// cstroe & Thomas Keller
+// 	(☝ ՞ਊ ՞)☝
+// https://stackoverflow.com/questions/10422054/is-there-a-way-to-list-task-dependencies-in-gradle
+//gradle.taskGraph.whenReady(closureOf<TaskExecutionGraph> {
+//    println("Found task graph: $this")
+//    println("Found " + allTasks.size + " tasks.")
+//    allTasks.forEach { task ->
+//        println(task)
+//        task.dependsOn.forEach { dep ->
+//            println("  - $dep")
+//        }
+//    }
+//})
