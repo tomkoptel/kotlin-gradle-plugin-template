@@ -1,5 +1,15 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:4.0.1")
+    }
+}
+
 plugins {
     kotlin("jvm") version BuildPluginsVersion.KOTLIN apply false
     id("io.gitlab.arturbosch.detekt") version BuildPluginsVersion.DETEKT
