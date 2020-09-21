@@ -5,6 +5,9 @@ plugins {
 }
 
 dependencies {
+//    compileOnly("com.android.tools.build:gradle:4.0.1") {
+//        because("Auto-wiring into Android projects")
+//    }
     implementation(kotlin("stdlib-jdk7"))
     implementation(gradleApi())
 
