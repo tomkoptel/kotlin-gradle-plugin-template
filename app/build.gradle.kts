@@ -1,4 +1,10 @@
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.gradle.internal.coverage.JacocoOptions
+import com.android.build.gradle.internal.CompileOptions
+import com.android.build.gradle.internal.dsl.DefaultConfig
+import com.android.build.gradle.internal.dsl.BuildType
+import com.android.build.gradle.api.AndroidSourceSet
+import org.gradle.api.NamedDomainObjectContainer
 
 // region Delegation Magic?
 // val buildGradle: Build_gradle = this
@@ -65,6 +71,46 @@ project.configure<BaseAppModuleExtension> {
 }
 // endregion
 
+// region Android Extension internals
+val moduleExtension: BaseAppModuleExtension = ext.getByType(BaseAppModuleExtension::class.java)
+val jacoco: JacocoOptions = moduleExtension.jacoco
+val compileOptions: CompileOptions = moduleExtension.compileOptions
+val defaultConfig: DefaultConfig = moduleExtension.defaultConfig
+val buildTypes: NamedDomainObjectContainer<BuildType> = moduleExtension.buildTypes
+val sourceSets: NamedDomainObjectContainer<AndroidSourceSet> = moduleExtension.sourceSets
+// endregion
+
+// region NDOC: getByName
+val releaseBuildType = buildTypes.getByName("release")
+releaseBuildType.isMinifyEnabled = false
+
+moduleExtension.buildTypes {
+    val container: NamedDomainObjectContainer<BuildType> = this
+
+    val releaseBT = container.findByName("release")
+    releaseBT?.isMinifyEnabled = false
+
+    val requireRelease = container.getByName("release")
+    requireRelease.isMinifyEnabled = false
+}
+// endregion
+
+// region NDOC: getting
+moduleExtension.buildTypes {
+    val container: NamedDomainObjectContainer<BuildType> = this
+    val release by container.getting
+    release.isMinifyEnabled = false
+}
+
+moduleExtension.buildTypes {
+    val container: NamedDomainObjectContainer<BuildType> = this
+    val release by container.getting {
+        isMinifyEnabled = false
+    }
+}
+// endregion
+
+// region Android Standard Config Boilerplate
 android {
     compileSdkVersion(30)
     buildToolsVersion("30.0.2")
@@ -95,6 +141,7 @@ android {
         jvmTarget = "1.8"
     }
 }
+// endregion
 
 // region Dependency Constraints
 dependencies {
