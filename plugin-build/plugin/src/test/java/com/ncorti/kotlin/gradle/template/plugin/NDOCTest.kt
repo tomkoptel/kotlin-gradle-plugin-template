@@ -15,18 +15,30 @@ class NDOCTest {
 
     @Test
     fun create() {
-        bookShelf.add(Book(name = "gradle"))
-        bookShelf.add(Book(name = "kotlin"))
+        val elGradle = Book(name = "gradle")
+        bookShelf.add(elGradle)
 
-        // region NDOC give me a value!
+        // region NDOC getByName
         val gradleByName = bookShelf.getByName("gradle")
+
+        assertEquals(gradleByName, elGradle)
+        // endregion
+
+        // region NDOC access with get operator
+        // NOTE you need explicitly import org.gradle.kotlin.dsl.get
+        assertEquals(bookShelf["gradle"], elGradle)
+        // endregion
+
+        // region NDOC access with named
+        val gradleBookProvider = bookShelf.named("gradle")
+        assertEquals(gradleBookProvider.get(), elGradle)
+        // endregion
+
+        // region NDOC getting
         // NOTE you need explicitly import org.gradle.kotlin.dsl.getValue
         val gradle by bookShelf.getting
-        assertEquals(gradleByName, gradle)
 
-        // NOTE you need explicitly import org.gradle.kotlin.dsl.get
-        assertEquals(bookShelf["gradle"], gradle)
-        assertEquals(bookShelf["gradle"], gradleByName)
+        assertEquals(gradleByName, elGradle)
         // endregion
 
         // region Object is a Bean
