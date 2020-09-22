@@ -10,4 +10,5 @@ rootProject.name = ("kotlin-gradle-plugin-template")
 
 include(":app")
 include(":example")
+include(":platform")
 includeBuild("plugin-build")

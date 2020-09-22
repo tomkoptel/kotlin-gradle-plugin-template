@@ -1,8 +1,32 @@
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+
+// region Delegation Magic?
+val kBS: Build_gradle = this
+//kBS.plugins {
+//    id("com.android.application")
+//    kotlin("android")
+//    kotlin("android.extensions")
+//}
+// endregion
+
 plugins {
-    id("com.android.application")
+    // region PluginDependenciesSpecScope vs PluginDependenciesSpec
+    val dependenciesSpec = this
+    val spec = dependenciesSpec.id("com.android.application")
+    // spec.apply(true)
+    // spec.version("4.0.1")
+    // endregion
+
     kotlin("android")
     kotlin("android.extensions")
+
+    id("project-report")
 }
+
+// region Verbose Android
+val ext = extensions
+val andExtension = extensions.getByType(BaseAppModuleExtension::class.java)
+// endregion
 
 android {
     compileSdkVersion(30)
@@ -35,15 +59,40 @@ android {
     }
 }
 
+// region Dependency Constraints
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("androidx.core:core-ktx:1.3.1")
-    implementation("androidx.appcompat:appcompat:1.2.0")
+    constraints {
+        androidTestImplementation("androidx.test:runner:1.3.0!!")
+        androidTestImplementation("androidx.test:core-ktx") {
+            val rejectVersions = (3..5).map { "alpha0$it" }.toTypedArray()
 
-    androidTestImplementation("androidx.test:core-ktx:1.3.0")
-    androidTestImplementation("androidx.test:runner:1.3.0")
+            version {
+                prefer("1.3.0")
+                reject(*rejectVersions)
+            }
+        }
+    }
+}
+// endregion
+
+dependencies {
+    // region BOM
+    implementation(enforcedPlatform(project(":platform")))
+    implementation("androidx.core:core-ktx")
+    implementation("androidx.appcompat:appcompat")
+    // endregion
+
+    implementation(kotlin("stdlib-jdk8"))
+
+    // region androidTestImplementationDependenciesMetadata
+    androidTestImplementation("androidx.test:core-ktx")
+    androidTestImplementation("androidx.test:runner") {
+        because("Gives launchActivity DSL.")
+    }
+    // endregion
 }
 
+// region What is my task type?
 // cstroe & Thomas Keller
 // 	(☝ ՞ਊ ՞)☝
 // https://stackoverflow.com/questions/10422054/is-there-a-way-to-list-task-dependencies-in-gradle
@@ -57,3 +106,4 @@ dependencies {
 //        }
 //    }
 //})
+// endregion
