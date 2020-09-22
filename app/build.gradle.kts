@@ -1,8 +1,13 @@
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 
 // region Delegation Magic?
-val kBS: Build_gradle = this
-//kBS.plugins {
+// val buildGradle: Build_gradle = this
+
+// Will it work?
+//val kBS: KotlinBuildScript = buildGradle
+
+// Will it work?
+//buildGradle.plugins {
 //    id("com.android.application")
 //    kotlin("android")
 //    kotlin("android.extensions")
@@ -17,19 +22,47 @@ plugins {
     // spec.version("4.0.1")
     // endregion
 
+    // region kotlin-android
     kotlin("android")
     kotlin("android.extensions")
+    // endregion
 
+    // region project-report
     id("project-report")
+    // endregion
 
     // region Convention plugin
     id("com.ncorti.kotlin.gradle.libraries")
     // endregion
 }
 
-// region Verbose Android
-val ext = extensions
-val andExtension = extensions.getByType(BaseAppModuleExtension::class.java)
+// region ExtensionContainer
+val extensionAware: ExtensionAware = project
+val ext: ExtensionContainer = extensionAware.extensions
+// endregion
+
+// region Configure Android Extension: With Accessor
+project.android { compileSdkVersion(30) }
+// endregion
+
+// region Configure Android Extension: With ExtensionContainer
+val andExtension: BaseAppModuleExtension = ext.getByType(BaseAppModuleExtension::class.java)
+andExtension.compileSdkVersion(30)
+// or
+andExtension.apply { compileSdkVersion(30) }
+// endregion
+
+// region Configure Android Extension: ExtensionContainer is a Convention
+val convention: Convention = project.extensions as Convention
+val andExtension2: BaseAppModuleExtension = convention.getByType(BaseAppModuleExtension::class.java)
+andExtension2.compileSdkVersion(30)
+// endregion
+
+// region Configure Android Extension: With a Plugin convention
+project.configure<BaseAppModuleExtension> {
+    val receiver: BaseAppModuleExtension = this
+    receiver.compileSdkVersion(30)
+}
 // endregion
 
 android {
