@@ -1,24 +1,34 @@
 plugins {
-    kotlin("jvm")
+    `kotlin-dsl`
     id("java-gradle-plugin")
     id("com.gradle.plugin-publish")
 }
 
 dependencies {
+    // region Add AGP
 //    compileOnly("com.android.tools.build:gradle:4.0.1") {
 //        because("Auto-wiring into Android projects")
 //    }
+    // endregion
+
+    // region implementation
     implementation(kotlin("stdlib-jdk7"))
     implementation(gradleApi())
+    // endregion
 
+    // region testImplementation
     testImplementation(TestingLib.JUNIT)
+    // endregion
 }
 
+// region Use Java8
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+// endregion
 
+// region gradle metadata
 gradlePlugin {
     plugins {
         create(PluginCoordinates.ID) {
@@ -28,8 +38,9 @@ gradlePlugin {
         }
     }
 }
+// endregion
 
-// Configuration Block for the Plugin Marker artifact on Plugin Central
+// region Configuration Block for the Plugin Marker artifact on Plugin Central
 pluginBundle {
     website = PluginBundle.WEBSITE
     vcsUrl = PluginBundle.VCS
@@ -42,7 +53,9 @@ pluginBundle {
         }
     }
 }
+// endregion
 
+// region setupPluginUploadFromEnvironment
 tasks.create("setupPluginUploadFromEnvironment") {
     doLast {
         val key = System.getenv("GRADLE_PUBLISH_KEY")
@@ -56,3 +69,4 @@ tasks.create("setupPluginUploadFromEnvironment") {
         System.setProperty("gradle.publish.secret", secret)
     }
 }
+// endregion
