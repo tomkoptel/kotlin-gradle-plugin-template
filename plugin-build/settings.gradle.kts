@@ -9,3 +9,4 @@ pluginManagement {
 rootProject.name = ("com.ncorti.kotlin.gradle.template")
 
 include(":plugin")
+include(":libraries")
