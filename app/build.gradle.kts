@@ -21,6 +21,10 @@ plugins {
     kotlin("android.extensions")
 
     id("project-report")
+
+    // region Convention plugin
+    id("com.ncorti.kotlin.gradle.libraries")
+    // endregion
 }
 
 // region Verbose Android
@@ -78,7 +82,7 @@ dependencies {
 dependencies {
     // region BOM
     implementation(enforcedPlatform(project(":platform")))
-    implementation("androidx.core:core-ktx")
+    implementation(myLibs.androidX.coreKtx)
     implementation("androidx.appcompat:appcompat")
     // endregion
 
