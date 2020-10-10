@@ -29,6 +29,10 @@ class ProjectGradleRunnerTest {
                     id 'com.android.application'
                     id 'com.ncorti.kotlin.gradle.template.plugin'
                 }
+                repositories {
+                    google()
+                    jcenter()
+                }
                 android {
                     compileSdkVersion(30)
                     buildToolsVersion("30.0.2")
@@ -61,9 +65,9 @@ class ProjectGradleRunnerTest {
         }.writeText(
             """
                 <?xml version="1.0" encoding="utf-8"?>
-                <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+                <manifest xmlns:android="http://schemas.android.com/apk/res/android"
                     package="com.dummy.android.app">
-                        <application android:label="@string/app_name"/>
+                    <application android:label="@string/app_name"/>
                 </manifest>
             """.trimIndent()
         )
@@ -78,16 +82,18 @@ class ProjectGradleRunnerTest {
                 </resources>
             """.trimIndent()
         )
+
+        testProjectDir.newFolder("src", "debug")
     }
 
     @Test
     fun testProject() {
         val gradleRunner = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments("tasks")
+            .withArguments(listOf("listUnusedStringsDebug", "-Dlint.baselines.continue=true"))
             .withPluginClasspath()
             .build()
         println(gradleRunner.output)
-        gradleRunner.task(":tasks")?.outcome == TaskOutcome.SUCCESS
+        gradleRunner.task(":listUnusedStringsDebug")?.outcome == TaskOutcome.SUCCESS
     }
 }

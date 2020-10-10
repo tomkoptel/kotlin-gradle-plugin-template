@@ -8,6 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.tasks.Copy
+import java.io.File
 
 abstract class TemplatePlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -41,9 +42,35 @@ abstract class TemplatePlugin : Plugin<Project> {
         val taskProvider = project.tasks.named(lintBaseline, Copy::class.java)
 
         project.tasks.register("listUnusedStrings$variantNameCaps") { task ->
-            task.dependsOn(taskProvider)
+            val outputDirPath = "${project.buildDir}/unusedRes$variantNameCaps"
+            val outputFilePath = "$outputDirPath/strings.csv"
+
             task.description = "Allows to list all unused strings for $variantName"
             task.group = "Pre Lint"
+            task.outputs.dir(outputDirPath).withPropertyName("outputDir")
+            task.outputs.file(outputFilePath).withPropertyName("outputFile")
+            task.dependsOn(taskProvider)
+
+            task.doLast {
+                val baselines = task.inputs.files.filter { file -> file.name.contains(".xml") }
+                val generateLintBaseline = taskProvider.get()
+                val baselineFile = generateLintBaseline.destinationDir.listFiles { _, name ->
+                    name?.contains("baseline", ignoreCase = true) ?: false
+                }?.firstOrNull()
+
+                baselineFile?.let {
+                    val outputFile = File(outputFilePath).apply {
+                        if (!exists()) {
+                            createNewFile()
+                        }
+                    }
+                    listUnusedStrings(baselineFile, outputFile)
+                }
+            }
         }
+    }
+
+    private fun listUnusedStrings(baselineFile: File, outputFile: File) {
+        TODO("Not yet implemented")
     }
 }
