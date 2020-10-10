@@ -6,6 +6,10 @@ plugins {
 
 dependencies {
     implementation(kotlin("stdlib-jdk7"))
+    implementation("com.android.tools.build:gradle:4.0.1")
+
+    // Lets define dependency on lint-variant-baseline + android plugins
+    implementation("com.nimroddayan.lint-variant-baseline:com.nimroddayan.lint-variant-baseline.gradle.plugin:0.1.2")
     implementation(gradleApi())
 
     testImplementation(TestingLib.JUNIT)
