@@ -15,7 +15,7 @@ class ProjectGradleRunnerTest {
     fun setupProject() {
         val buildGradle = testProjectDir.newFile("build.gradle")
         buildGradle.writeText(
-                """
+            """
                 buildscript {
                     repositories {
                         google()
@@ -41,41 +41,53 @@ class ProjectGradleRunnerTest {
                         versionCode = 1
                         versionName = "1.0"
                     }
+                    android {
+                        lintOptions {
+                            // It is recommended to set the baseline file path to build dir
+                            // because the variant specific one will be copied from variant source dir just before lint starts
+                            baseline file("build/lint-baseline.xml")
+                            checkDependencies false
+                            checkReleaseBuilds true
+                            abortOnError true
+                        }
+                    }
                 }
-                """.trimIndent()
+            """.trimIndent()
         )
 
         with(testProjectDir) {
             newFolder("src", "main")
             newFile("src/main/AndroidManifest.xml")
         }.writeText(
-                """
+            """
                 <?xml version="1.0" encoding="utf-8"?>
                 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
                     package="com.dummy.android.app">
                         <application android:label="@string/app_name"/>
                 </manifest>
-                """.trimIndent()
+            """.trimIndent()
         )
 
         with(testProjectDir) {
             newFolder("src", "main", "res", "values")
             newFile("src/main/res/values/strings.xml")
         }.writeText(
-                """
+            """
                 <resources>
                     <string name="app_name">Dummy app</string>
                 </resources>
-                """.trimIndent()
+            """.trimIndent()
         )
     }
 
     @Test
     fun testProject() {
         val gradleRunner = GradleRunner.create()
-                .withProjectDir(testProjectDir.root)
-                .withPluginClasspath()
-                .build()
-        gradleRunner.task(":help")?.outcome == TaskOutcome.SUCCESS
+            .withProjectDir(testProjectDir.root)
+            .withArguments("tasks")
+            .withPluginClasspath()
+            .build()
+        println(gradleRunner.output)
+        gradleRunner.task(":tasks")?.outcome == TaskOutcome.SUCCESS
     }
 }
