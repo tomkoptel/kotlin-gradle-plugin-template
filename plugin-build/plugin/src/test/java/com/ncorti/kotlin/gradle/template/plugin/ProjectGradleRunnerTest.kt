@@ -2,6 +2,7 @@ package com.ncorti.kotlin.gradle.template.plugin
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -79,6 +80,7 @@ class ProjectGradleRunnerTest {
             """
                 <resources>
                     <string name="app_name">Dummy app</string>
+                    <string name="unused">UNUSED</string>
                 </resources>
             """.trimIndent()
         )
@@ -94,6 +96,6 @@ class ProjectGradleRunnerTest {
             .withPluginClasspath()
             .build()
         println(gradleRunner.output)
-        gradleRunner.task(":listUnusedStringsDebug")?.outcome == TaskOutcome.SUCCESS
+        assertTrue(gradleRunner.task(":listUnusedStringsDebug")?.outcome == TaskOutcome.SUCCESS)
     }
 }

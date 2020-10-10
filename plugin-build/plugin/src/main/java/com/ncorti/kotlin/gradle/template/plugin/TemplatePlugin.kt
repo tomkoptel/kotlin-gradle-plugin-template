@@ -4,6 +4,8 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.ncorti.kotlin.gradle.template.plugin.parser.Issue
+import com.ncorti.kotlin.gradle.template.plugin.parser.lintIssues
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.AppliedPlugin
@@ -52,7 +54,6 @@ abstract class TemplatePlugin : Plugin<Project> {
             task.dependsOn(taskProvider)
 
             task.doLast {
-                val baselines = task.inputs.files.filter { file -> file.name.contains(".xml") }
                 val generateLintBaseline = taskProvider.get()
                 val baselineFile = generateLintBaseline.destinationDir.listFiles { _, name ->
                     name?.contains("baseline", ignoreCase = true) ?: false
@@ -71,6 +72,8 @@ abstract class TemplatePlugin : Plugin<Project> {
     }
 
     private fun listUnusedStrings(baselineFile: File, outputFile: File) {
-        TODO("Not yet implemented")
+        baselineFile.lintIssues()
+            .filter(Issue::isUnusedString)
+            .forEach { issue -> println(issue) }
     }
 }
