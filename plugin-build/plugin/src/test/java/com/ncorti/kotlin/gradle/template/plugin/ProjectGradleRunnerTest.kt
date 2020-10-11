@@ -80,7 +80,8 @@ class ProjectGradleRunnerTest {
             """
                 <resources>
                     <string name="app_name">Dummy app</string>
-                    <string name="unused">UNUSED</string>
+                    <string name="unused1">UNUSED1</string>
+                    <string name="unused2">UNUSED2</string>
                 </resources>
             """.trimIndent()
         )

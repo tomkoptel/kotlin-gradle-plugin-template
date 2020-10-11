@@ -12,5 +12,10 @@ internal data class Issue(
     val errorLine2: String,
     val location: Location
 ) {
+    private companion object {
+        val PATTERN = "`R.string.(.*)`".toRegex()
+    }
+
     val isUnusedString: Boolean get() = id == "UnusedResources" && message.contains("R.string")
+    val extractStringKey: String? get() = PATTERN.findAll(message).firstOrNull()?.groupValues?.lastOrNull()
 }

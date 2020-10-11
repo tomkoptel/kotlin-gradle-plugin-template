@@ -65,15 +65,23 @@ abstract class TemplatePlugin : Plugin<Project> {
                             createNewFile()
                         }
                     }
-                    listUnusedStrings(baselineFile, outputFile)
+                    listUnusedStrings(project, baselineFile, outputFile)
                 }
             }
         }
     }
 
-    private fun listUnusedStrings(baselineFile: File, outputFile: File) {
+    private fun listUnusedStrings(project: Project, baselineFile: File, outputFile: File) {
         baselineFile.lintIssues()
+            .asSequence()
             .filter(Issue::isUnusedString)
-            .forEach { issue -> println(issue) }
+            .mapNotNull {
+                project.logger.info("Recorded issue $it")
+                it.extractStringKey
+            }
+            .forEach { issue ->
+                outputFile.appendText("$issue\n")
+            }
+        project.logger.info("The unused strings recorded at $outputFile")
     }
 }
