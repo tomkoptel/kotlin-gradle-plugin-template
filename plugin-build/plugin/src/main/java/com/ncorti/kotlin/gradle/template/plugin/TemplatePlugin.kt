@@ -13,6 +13,10 @@ import org.gradle.api.tasks.Copy
 import java.io.File
 
 abstract class TemplatePlugin : Plugin<Project> {
+    companion object {
+        const val lintBaselinePlugin = "com.nimroddayan.lint-variant-baseline"
+    }
+
     override fun apply(project: Project) {
         project.plugins.withType(AppPlugin::class.java) {
             val extension = project.extensions.getByName("android") as BaseAppModuleExtension
@@ -33,7 +37,6 @@ abstract class TemplatePlugin : Plugin<Project> {
     }
 
     private fun Project.applyLintVariantBaseLinePlugin(configure: (AppliedPlugin) -> Unit) {
-        val lintBaselinePlugin = "com.nimroddayan.lint-variant-baseline"
         pluginManager.apply(lintBaselinePlugin)
         pluginManager.withPlugin(lintBaselinePlugin, configure)
     }
