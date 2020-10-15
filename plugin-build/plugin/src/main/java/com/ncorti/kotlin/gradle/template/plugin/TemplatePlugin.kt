@@ -52,15 +52,15 @@ abstract class TemplatePlugin : Plugin<Project> {
 
             task.description = "Allows to list all unused strings for $variantName"
             task.group = "Pre Lint"
+            task.inputs.files(taskProvider).withPropertyName("baseLineFiles")
             task.outputs.dir(outputDirPath).withPropertyName("outputDir")
             task.outputs.file(outputFilePath).withPropertyName("outputFile")
             task.dependsOn(taskProvider)
 
             task.doLast {
-                val generateLintBaseline = taskProvider.get()
-                val baselineFile = generateLintBaseline.destinationDir.listFiles { _, name ->
-                    name?.contains("baseline", ignoreCase = true) ?: false
-                }?.firstOrNull()
+                val baselineFile = it.inputs.files.asFileTree.files.firstOrNull { file ->
+                    file.name.contains("baseline", ignoreCase = true) ?: false
+                }
 
                 baselineFile?.let {
                     val outputFile = File(outputFilePath).apply {

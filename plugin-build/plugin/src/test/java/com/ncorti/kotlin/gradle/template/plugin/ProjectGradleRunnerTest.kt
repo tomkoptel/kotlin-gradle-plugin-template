@@ -95,6 +95,7 @@ class ProjectGradleRunnerTest {
             .withProjectDir(testProjectDir.root)
             .withArguments(listOf("listUnusedStringsDebug", "-Dlint.baselines.continue=true"))
             .withPluginClasspath()
+            .withDebug(true)
             .build()
         println(gradleRunner.output)
         assertTrue(gradleRunner.task(":listUnusedStringsDebug")?.outcome == TaskOutcome.SUCCESS)
